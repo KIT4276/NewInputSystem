@@ -15,8 +15,8 @@ public class PlayerSignalHandler : MonoBehaviour
     public Vector2 MoveVector { get; private set; }
     public ControlType ControlType { get; private set; }
     public Vector3 TargetPosition { get; private set; }
+    public Vector2 MoucePosition { get; private set; }
 
-    private Vector2 _moucePosition;
     private float _lastClickTime;
 
     private void Awake()
@@ -66,7 +66,7 @@ public class PlayerSignalHandler : MonoBehaviour
 
     private void HandleTargetCommand()
     {
-        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(_moucePosition), Vector2.zero);
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(MoucePosition), Vector2.zero);
 
         if (hit.collider != null && hit.collider.CompareTag("Ground"))
         {
@@ -74,7 +74,7 @@ public class PlayerSignalHandler : MonoBehaviour
 
             ControlType = ControlType.AI;
 
-            var worldPosition = Camera.main.ScreenToWorldPoint(_moucePosition);
+            var worldPosition = Camera.main.ScreenToWorldPoint(MoucePosition);
             TargetPosition = new Vector3(worldPosition.x, worldPosition.y, 0f);
 
             OnMouceClick?.Invoke();
@@ -95,7 +95,7 @@ public class PlayerSignalHandler : MonoBehaviour
 
     private void HandleLookCommand(Vector2 lookCommand)
     {
-        _moucePosition = lookCommand;
+        MoucePosition = lookCommand;
     }
 
     private void HandleMoveCommand(Vector2 moveCommand)
