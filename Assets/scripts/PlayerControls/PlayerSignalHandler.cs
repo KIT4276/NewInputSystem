@@ -7,8 +7,8 @@ public class PlayerSignalHandler : MonoBehaviour
     [SerializeField] private PlayerInput _playerInput;
     [SerializeField] private float _doubleClickTime = 0.2f;
 
-    public event Action OnMouceClick;
-    public event Action OnButtoneClick;
+    public event Action MouseClickOnGround;
+    public event Action ButtoneClick;
 
     public bool IsRunningMouce { get; private set; }
     public bool IsRunningKeyboard { get; private set; }
@@ -23,7 +23,7 @@ public class PlayerSignalHandler : MonoBehaviour
     {
         _playerInput.onActionTriggered += OnPlayerInputActionTriggered;
     }
-    
+
     private void OnPlayerInputActionTriggered(InputAction.CallbackContext context)
     {
         InputAction action = context.action;
@@ -54,20 +54,16 @@ public class PlayerSignalHandler : MonoBehaviour
                 break;
 
             case "Target":
-                switch (action.phase)
-                {
-                    case InputActionPhase.Started:
-                        HandleTargetCommand();
-                        break;
-                }
+                if (action.phase == InputActionPhase.Started)
+                    HandleClikCommand();
                 break;
         }
     }
 
-    private void HandleTargetCommand()
+    private void HandleClikCommand()
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(MoucePosition), Vector2.zero);
-
+        
         if (hit.collider != null && hit.collider.CompareTag("Ground"))
         {
             IsHeRunning();
@@ -77,7 +73,7 @@ public class PlayerSignalHandler : MonoBehaviour
             var worldPosition = Camera.main.ScreenToWorldPoint(MoucePosition);
             TargetPosition = new Vector3(worldPosition.x, worldPosition.y, 0f);
 
-            OnMouceClick?.Invoke();
+            MouseClickOnGround?.Invoke();
         }
     }
 
@@ -105,7 +101,7 @@ public class PlayerSignalHandler : MonoBehaviour
         if (MoveVector != Vector2.zero)
         {
             ControlType = ControlType.WASD;
-            OnButtoneClick?.Invoke();
+            ButtoneClick?.Invoke();
         }
     }
 }

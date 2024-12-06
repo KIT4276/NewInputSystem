@@ -23,26 +23,26 @@ public class Preview : MonoBehaviour
         _red = new Color(1, 0.2f, 0.2f, 0.8f);
     }
 
-    private void OnMouseDrag()
-    {
-        if (EventSystem.current.IsPointerOverGameObject()) { return; }
+    //private void OnMouseDrag()
+    //{
+    //    if (EventSystem.current.IsPointerOverGameObject()) { return; }
+    //    Debug.Log("OnMouseDrag");
+    //    _idMoving = true;
+    //}
 
-        _idMoving = true;
-    }
-
-    private void OnMouseUp()
-    {
-        _idMoving = false;
-    }
+    //private void OnMouseUp()
+    //{
+    //    _idMoving = false;
+    //}
 
     public void SetCurrentMousePosition(Vector2 position, Vector2Int GridPose, Func<Boolean> isBuildAvailable)
     {
-        if (_idMoving)
-        {
+        //if (_idMoving)
+        //{
             transform.position = position;
             _currentGridPos = GridPose;
             SetBuildAvailable(isBuildAvailable());
-        }
+        //}
     }
 
     public void SetSpawnPosition(Vector2Int GridPose)

@@ -15,7 +15,7 @@ public class PlayerMove : MonoBehaviour
 
     private void Start()
     {
-        _playerSignalHandler.OnMouceClick += UpdateAI;
+        _playerSignalHandler.MouseClickOnGround += UpdateAI;
         _navMeshAgent.updateRotation = false;
         _navMeshAgent.updateUpAxis = false;
     }
