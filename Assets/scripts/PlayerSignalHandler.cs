@@ -1,10 +1,14 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerSignalHandler : MonoBehaviour
 {
     [SerializeField] private PlayerInput _playerInput;
+
+    public event Action OnMouceClick;
+    public event Action OnButtoneClick;
 
     public bool IsRunning { get; private set; }
     public Vector2 MoveVector { get; private set; }
@@ -65,11 +69,12 @@ public class PlayerSignalHandler : MonoBehaviour
 
     private void HandleTargetCommand()
     {
-
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(_moucePosition), Vector2.zero);
 
         if (hit.collider != null && hit.collider.CompareTag("Ground"))
         {
+            OnMouceClick?.Invoke();
+
             ControlType = ControlType.AI;
             var worldPosition = Camera.main.ScreenToWorldPoint(_moucePosition);
             TargetPosition = new Vector3(worldPosition.x, worldPosition.y, 0f);
@@ -90,6 +95,7 @@ public class PlayerSignalHandler : MonoBehaviour
 
         if (MoveVector != Vector2.zero)
         {
+            OnButtoneClick?.Invoke();
             ControlType = ControlType.WASD;
         }
     }

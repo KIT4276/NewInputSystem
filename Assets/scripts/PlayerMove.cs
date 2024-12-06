@@ -13,41 +13,42 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField] private float _moveSpeed;
 
-    private void Awake()
+    private void Start()
     {
+        _playerSignalHandler.OnMouceClick += UpdateAI;
+        _playerSignalHandler.OnButtoneClick += UpdateWASD;
         _navMeshAgent.updateRotation = false;
-        _navMeshAgent.updateUpAxis = false;     
+        _navMeshAgent.updateUpAxis = false;
     }
 
     private void Update()
     {
-        UpdateWASD(_playerSignalHandler.MoveVector, _playerSignalHandler.IsRunning);
-        UpdateAI(_playerSignalHandler.TargetPosition, _playerSignalHandler.IsRunning);
+        if (_playerSignalHandler.ControlType == ControlType.WASD)
+            UpdateWASD();
     }
 
-    public void UpdateWASD(Vector2 moveVector, bool isRunning)
+    public void UpdateWASD()
     {
         _navMeshAgent.enabled = false;
 
-        if (isRunning)
+        if (_playerSignalHandler.IsRunning)
             _moveSpeed = _runningSpeed;
         else
             _moveSpeed = _walkSpeed;
 
-        _characterController.Move((Vector3)(_moveSpeed * Time.deltaTime * moveVector));
+        _characterController.Move((Vector3)(_moveSpeed * Time.deltaTime * _playerSignalHandler.MoveVector));
     }
 
-    public void UpdateAI(Vector3 targetPosition, bool isRunning)
+    public void UpdateAI()
     {
         _navMeshAgent.enabled = true;
 
-        if (isRunning)
+        if (_playerSignalHandler.IsRunning)
             _navMeshAgent.speed = _runningSpeed;
         else
             _navMeshAgent.speed = _walkSpeed;
 
-        _navMeshAgent.SetDestination(targetPosition);
-        Debug.Log(targetPosition);
-
+        _navMeshAgent.SetDestination(_playerSignalHandler.TargetPosition);
+        Debug.Log(_playerSignalHandler.TargetPosition);
     }
 }
