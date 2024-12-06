@@ -70,7 +70,10 @@ public class PlayerSignalHandler : MonoBehaviour
 
         if (hit.collider != null && hit.collider.CompareTag("Ground"))
         {
+            ControlType = ControlType.AI;
             var worldPosition = Camera.main.ScreenToWorldPoint(_moucePosition);
+            TargetPosition = new Vector3(worldPosition.x, worldPosition.y, 0f);
+            //Debug.Log(TargetPosition);
         }
     }
 

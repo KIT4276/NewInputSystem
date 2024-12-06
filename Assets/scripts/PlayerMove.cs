@@ -13,6 +13,12 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField] private float _moveSpeed;
 
+    private void Awake()
+    {
+        _navMeshAgent.updateRotation = false;
+        _navMeshAgent.updateUpAxis = false;     
+    }
+
     private void Update()
     {
         UpdateWASD(_playerSignalHandler.MoveVector, _playerSignalHandler.IsRunning);
@@ -41,5 +47,7 @@ public class PlayerMove : MonoBehaviour
             _navMeshAgent.speed = _walkSpeed;
 
         _navMeshAgent.SetDestination(targetPosition);
+        Debug.Log(targetPosition);
+
     }
 }
