@@ -1,27 +1,29 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerSignalHandler : MonoBehaviour
 {
     [SerializeField] private PlayerInput _playerInput;
+    [SerializeField] private float _doubleClickTime = 0.2f;
 
     public event Action OnMouceClick;
     public event Action OnButtoneClick;
 
-    public bool IsRunning { get; private set; }
+    public bool IsRunningMouce { get; private set; }
+    public bool IsRunningKeyboard { get; private set; }
     public Vector2 MoveVector { get; private set; }
     public ControlType ControlType { get; private set; }
     public Vector3 TargetPosition { get; private set; }
 
     private Vector2 _moucePosition;
+    private float _lastClickTime;
 
     private void Awake()
     {
         _playerInput.onActionTriggered += OnPlayerInputActionTriggered;
     }
-
+    
     private void OnPlayerInputActionTriggered(InputAction.CallbackContext context)
     {
         InputAction action = context.action;
@@ -33,11 +35,6 @@ public class PlayerSignalHandler : MonoBehaviour
                 HandleMoveCommand(moveCommand);
                 break;
 
-            //case "Rotate":
-            //    Vector2 rotateCommand = action.ReadValue<Vector2>();
-            //    HandleRotateCommand(rotateCommand);
-            //    break;
-
             case "Look":
                 Vector2 lookCommand = action.ReadValue<Vector2>();
                 HandleLookCommand(lookCommand);
@@ -47,10 +44,10 @@ public class PlayerSignalHandler : MonoBehaviour
                 switch (action.phase)
                 {
                     case InputActionPhase.Started:
-                        IsRunning = true;
+                        IsRunningKeyboard = true;
                         break;
                     case InputActionPhase.Canceled:
-                        IsRunning = false;
+                        IsRunningKeyboard = false;
                         break;
                 }
 
@@ -73,19 +70,31 @@ public class PlayerSignalHandler : MonoBehaviour
 
         if (hit.collider != null && hit.collider.CompareTag("Ground"))
         {
-            OnMouceClick?.Invoke();
+            IsHeRunning();
 
             ControlType = ControlType.AI;
+
             var worldPosition = Camera.main.ScreenToWorldPoint(_moucePosition);
             TargetPosition = new Vector3(worldPosition.x, worldPosition.y, 0f);
-            //Debug.Log(TargetPosition);
+
+            OnMouceClick?.Invoke();
         }
+    }
+
+    private void IsHeRunning()
+    {
+        float timeSinceLastClick = Time.time - _lastClickTime;
+
+        if (timeSinceLastClick <= _doubleClickTime)
+            IsRunningMouce = true;
+        else
+            IsRunningMouce = false;
+
+        _lastClickTime = Time.time;
     }
 
     private void HandleLookCommand(Vector2 lookCommand)
     {
-        //Debug.Log("HandleLookCommand " + lookCommand);
-
         _moucePosition = lookCommand;
     }
 
@@ -95,8 +104,8 @@ public class PlayerSignalHandler : MonoBehaviour
 
         if (MoveVector != Vector2.zero)
         {
-            OnButtoneClick?.Invoke();
             ControlType = ControlType.WASD;
+            OnButtoneClick?.Invoke();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-[RequireComponent(typeof(NavMeshAgent), typeof(CharacterController))]
+[RequireComponent(typeof(NavMeshAgent), typeof(CharacterController), typeof(PlayerSignalHandler))]
 public class PlayerMove : MonoBehaviour
 {
     [SerializeField] private NavMeshAgent _navMeshAgent;
@@ -16,7 +16,6 @@ public class PlayerMove : MonoBehaviour
     private void Start()
     {
         _playerSignalHandler.OnMouceClick += UpdateAI;
-        _playerSignalHandler.OnButtoneClick += UpdateWASD;
         _navMeshAgent.updateRotation = false;
         _navMeshAgent.updateUpAxis = false;
     }
@@ -31,7 +30,7 @@ public class PlayerMove : MonoBehaviour
     {
         _navMeshAgent.enabled = false;
 
-        if (_playerSignalHandler.IsRunning)
+        if (_playerSignalHandler.IsRunningKeyboard)
             _moveSpeed = _runningSpeed;
         else
             _moveSpeed = _walkSpeed;
@@ -43,12 +42,11 @@ public class PlayerMove : MonoBehaviour
     {
         _navMeshAgent.enabled = true;
 
-        if (_playerSignalHandler.IsRunning)
+        if (_playerSignalHandler.IsRunningMouce)
             _navMeshAgent.speed = _runningSpeed;
         else
             _navMeshAgent.speed = _walkSpeed;
 
         _navMeshAgent.SetDestination(_playerSignalHandler.TargetPosition);
-        Debug.Log(_playerSignalHandler.TargetPosition);
     }
 }
